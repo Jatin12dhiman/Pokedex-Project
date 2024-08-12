@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import './PokemonList.css';
 import Pokemon from '../Pokemon/Pokemon';
 
-import './PokemonList.css';
 
 function PokemonList(){
 
@@ -17,6 +17,7 @@ function PokemonList(){
         const pokemonResults = response.data.results;//we get the array of Pokemons from result
         //Is array m unka nam h or uki detail nikalne ke liya unka url h
 
+        console.log(response.data)
 
         //Iterating over the array of Pokemnos and uding their url, to create an array of promises that will download those 20 pokemons
         const pokemonResultPromise = pokemonResults.map((pokemon)=>axios.get(pokemon.url))
@@ -35,7 +36,7 @@ function PokemonList(){
                      types:pokemon.types}
         }));
         console.log(pokeListResult)
-        setPokemonList(pokeListResultx);
+        setPokemonList(pokeListResult);
         setIsLoading(false); 
     }
 
@@ -46,8 +47,14 @@ function PokemonList(){
 
   
     return <div className="pokemon-list-wrapper">
-      <div> Pokemon List</div>
-       {(isLoading ? 'Loading....  ': pokemonList.map((p)=> <Pokemon name={p.name} image={p.image} key={p.id} />))}
+      <div className="pokemon-wrapper">
+        {(isLoading ? 'Loading....  ': pokemonList.map((p)=> <Pokemon name={p.name} image={p.image} key={p.id} />))
+        }
+      </div>
+      <div className="controls">
+        <button> Prev </button>
+        <button>Next</button>
+      </div>
     </div>
 }
 
