@@ -9,15 +9,21 @@ function PokemonList(){
     const[pokemonList,setPokemonList]=useState([]);
     const [isLoading, setIsLoading]=useState(true);
 
-    const POKEDEX_URL = 'https://pokeapi.co/api/v2/pokemon';
+    const [pokedexUrl , setPokedexUrl] = useState('https://pokeapi.co/api/v2/pokemon');
+
+    const [nextUrl,setNextUrl] = useState('');
+    const [prevUrl,setPrevUrl] = useState('');
 
     async function downloadPokemons(){
-        const response = await axios.get(POKEDEX_URL)  //This downloads  the List of 20 pokemons
+        setIsLoading(true);
+        const response = await axios.get(pokedexUrl)  //This downloads  the List of 20 pokemons
 
         const pokemonResults = response.data.results;//we get the array of Pokemons from result
         //Is array m unka nam h or uki detail nikalne ke liya unka url h
 
         console.log(response.data)
+        setNextUrl(response.data.next);
+        setPrevUrl(response.data.previous)
 
         //Iterating over the array of Pokemnos and uding their url, to create an array of promises that will download those 20 pokemons
         const pokemonResultPromise = pokemonResults.map((pokemon)=>axios.get(pokemon.url))
@@ -43,17 +49,17 @@ function PokemonList(){
    
     useEffect(() => {
         downloadPokemons();
-    },[])//Khali array ka mtlb -> ab ye kisi pr bhi dependent nhi h(UseEffect kisi pr bhi dependent nhi h), kisi state varaible ke change ko ye detect nhi kr rha 
+    },[pokedexUrl])//Khali array ka mtlb -> ab ye kisi pr bhi dependent nhi h(UseEffect kisi pr bhi dependent nhi h), kisi state varaible ke change ko ye detect nhi kr rha 
 
   
     return <div className="pokemon-list-wrapper">
       <div className="pokemon-wrapper">
-        {(isLoading ? 'Loading....  ': pokemonList.map((p)=> <Pokemon name={p.name} image={p.image} key={p.id} />))
+        {(isLoading ? 'Loading....  ': pokemonList.map((p)=> <Pokemon name={p.name} image={p.image} key={p.id} id={p.id} />))
         }
       </div>
       <div className="controls">
-        <button> Prev </button>
-        <button>Next</button>
+        <button disabled={prevUrl == null} onClick={()=>setPokedexUrl(prevUrl)}> Prev </button>
+        <button disabled={nextUrl == null} onClick={()=>setPokedexUrl(nextUrl)}>Next</button>
       </div>
     </div>
 }
