@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from 'axios';
+// import { useEffect, useState } from "react";
+// import axios from 'axios';
 import './PokemonList.css';
 import Pokemon from '../Pokemon/Pokemon';
+import usePokemonList from "../../hooks/usePokemonList";
 
 
 function PokemonList() {
+
+  const [pokemonListState , setPokemonListState] = usePokemonList( false);
 
   /**  const[pokemonList,setPokemonList]=useState([]);
    const [isLoading, setIsLoading]=useState(true);
@@ -13,7 +16,7 @@ function PokemonList() {
 
    const [nextUrl,setNextUrl] = useState('');
    const [prevUrl,setPrevUrl] = useState('');
-   */
+   
 
   const [pokemonListState, setPokemonListState] = useState({
     pokemonList: [],
@@ -69,7 +72,8 @@ function PokemonList() {
     downloadPokemons();
   }, [pokemonListState.pokedexUrl])//Khali array ka mtlb -> ab ye kisi pr bhi dependent nhi h(UseEffect kisi pr bhi dependent nhi h), kisi state varaible ke change ko ye detect nhi kr rha 
 
-
+  **/
+ //Ye useEffectPokemonList.jsx me as a hook chla gya h
   return <div className="pokemon-list-wrapper">
     <div className="pokemon-wrapper">
       {(pokemonListState.isLoading ? 'Loading....  ' : pokemonListState.pokemonList.map((p) => <Pokemon name={p.name} image={p.image} key={p.id} id={p.id} />))
