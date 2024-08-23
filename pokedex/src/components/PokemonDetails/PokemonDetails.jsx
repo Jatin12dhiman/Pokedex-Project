@@ -1,25 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";//hme Id mil gyi h
 import './PokemonDetail.css';
+import usePokemonList from "../../hooks/usePokemonList";
+import usePokemonDetails from "../../hooks/usePokemonDetails";
 
-function PokemonDetails(){
-    const {id} = useParams();
-    const[pokemon , setPokemon]= useState({});
-    async function downloadPokemon(){
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        setPokemon({
-            name: response.data.name,
-            image:response.data.sprites.other.dream_world.front_default,
-            weight:response.data.weight,
-            height:response.data.height,
-            types:response.data.types.map((t) => t.type.name)
-        })
-    }
-
-    useEffect(()=>{
-        downloadPokemon()
-    },[])
+//Same state which is in usePokemonDetail use ke rhe the
+function PokemonDetails() {
+    const { id } = useParams();
+    const [pokemon] = usePokemonDetails(id);
 
     return (
         <div className="pokemon-details-wrapper">
@@ -28,9 +17,23 @@ function PokemonDetails(){
             <div className="pokemon-details-name">Height : {pokemon.height}</div>
             <div className="pokemon-details-name">Weight : {pokemon.weight}</div>
             <div className="pokemon-details-types">
-            {pokemon.types && pokemon.types.map((t) => <div key={t}>{t}</div>)}
+                {pokemon.types && pokemon.types.map((t) => <div key={t}>{t}</div>)}
 
             </div>
+
+            {
+                pokemon.types && pokemon.similarPokemons &&
+                <div>
+                    more {pokemon.types[0]} type pokemons
+
+                    <ul>
+                            {pokemon.similarPokemons.map((p) => (
+                                <li key={p.pokemon.id}>{p.pokemon.name}</li>
+                            ))}
+                     </ul>
+
+                </div>
+            }
         </div>
     );
 
